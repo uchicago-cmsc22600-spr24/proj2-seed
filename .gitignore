@@ -1,0 +1,15 @@
+## SML/NJ stuff ##
+.cm/
+
+## macOS finder
+.DS_Store
+
+## generated lexer and parser
+src/parser/ovid.grm.sml
+src/parser/ovid.lex.sml
+
+## heap image
+bin/ovc.amd64-linux
+bin/ovc.amd64-darwin
+bin/ovc.x86-win32
+

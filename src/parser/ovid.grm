@@ -1,0 +1,74 @@
+(* ovid.grm
+ *
+ * COPYRIGHT (c) 2024 John Reppy (http://cs.uchicago.edu/~jhr)
+ * All rights reserved.
+ *
+ * Sample code
+ * CMSC 22600
+ * Spring 2024
+ * University of Chicago
+ *
+ * ML-Antlr parser specification for Ovid.
+ *)
+
+%name Ovid;
+
+%defs (
+  structure PT = ParseTree
+
+  type pos = Error.pos
+
+  (* YOUR CODE HERE *)
+);
+
+%tokens
+    : KW_case           ("case")
+    | KW_do             ("do")
+    | KW_else           ("else")
+    | KW_end            ("end")
+    | KW_fun            ("fun")
+    | KW_if             ("if")
+    | KW_in             ("in")
+    | KW_instance       ("instance")
+    | KW_let            ("let")
+    | KW_of             ("of")
+    | KW_overload       ("overload")
+    | KW_then           ("then")
+    | KW_type           ("type")
+    | LP                ("(")
+    | RP                (")")
+    | LB                ("[")
+    | RB                ("]")
+    | LCB               ("{")
+    | RCB               ("}")
+    | ORELSE            ("||")
+    | ANDALSO           ("&&")
+    | EQ                ("=")
+    | EQEQ              ("==")
+    | NEQ               ("!=")
+    | LTE               ("<=")
+    | LT                ("<")
+    | PLUS              ("+")
+    | MINUS             ("-")
+    | TIMES             ("*")
+    | DIV               ("/")
+    | MOD               ("%")
+    | COMMA             (",")
+    | COLON             (":")
+    | BAR		("|")
+    | ARROW             ("->")
+    | DARROW            ("=>")
+    | WILD              ("_")
+    | UID of Atom.atom                  (* leading-upper-case identifiers *)
+    | LID of Atom.atom                  (* leading-lower-case identifiers *)
+    | NUMBER of IntInf.int              (* integer literals *)
+    | STRING of string                  (* string literals *)
+    ;
+
+%start Program;
+
+(* REPLACE WITH YOUR GRAMMAR *)
+Program
+        :
+                => (PT.Prog [])
+        ;
