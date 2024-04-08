@@ -92,7 +92,7 @@ structure Context : sig
     val findVar : t * Atom.atom -> var_use option
 
     (* convenience function for looking up binary and unary operator symbols *)
-    val lookupOp : t * Atom.atom -> BindTree.valid
+    val lookupOp : t * Atom.atom -> var_use
 
     (* print the environments of a context to stdOut (for debugging) *)
     val dump : t -> unit
@@ -102,7 +102,7 @@ structure Context : sig
     structure BT = BindTree
     structure AMap = AtomMap
 
-    datatype var_use = OvldUse of BT.ovldid | VarUse of BT.valid
+    datatype var_use = datatype BT.var_use
 
     type tyvar_env = BindTree.tyvar AMap.map
     type tycon_env = BindTree.tycon AMap.map
@@ -202,7 +202,10 @@ structure Context : sig
 
     fun isOverloaded (Cxt{ovldEnv, ...}, id) = AtomMap.inDomain(ovldEnv, id)
 
-    fun lookupOp (Cxt{varEnv, ...}, id) = AtomMap.lookup(varEnv, id)
+    fun lookupOp (cxt, id) = (case findVar (cxt, id)
+           of SOME varUse => varUse
+            | NONE => raise Fail(concat["unknown operator '", Atom.toString id, "'"])
+          (* end case *))
 
     structure B = BindBasis
 

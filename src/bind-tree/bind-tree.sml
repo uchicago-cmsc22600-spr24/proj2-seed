@@ -31,6 +31,9 @@ structure BindTree =
     type ovldid = OvldId.t
     type valid = ValId.t
 
+    (* variable-use occurrences are either overloaded or non-overloaded variables. *)
+    datatype var_use = OvldUse of ovldid | VarUse of valid
+
     type number = IntInf.int                    (* integer literal *)
 
     datatype program
@@ -79,14 +82,13 @@ structure BindTree =
       | IfExp of exp * exp * exp                (* conditional *)
       | OrElseExp of exp * exp                  (* `||` conditional operator *)
       | AndAlsoExp of exp * exp                 (* `&&` conditional operator *)
-      | BinExp of exp * valid * exp             (* infix binary operators *)
-      | UnExp of valid * exp                    (* unary operator *)
+      | BinExp of exp * var_use * exp           (* infix binary operators *)
+      | UnExp of var_use * exp                  (* unary operator *)
       | AppExp of exp * exp                     (* value application *)
       | TupleExp of exp list                    (* tuple; the list should have zero
                                                  * or more than one items.
                                                  *)
-      | OvldVarExp of ovldid                    (* overloaded-variable occurrence *)
-      | ValVarExp of valid                      (* value-identifier occurrence *)
+      | VarExp of var_use                       (* variable-use occurrence *)
       | ConExp of conid                         (* data constructor identifier *)
       | IntExp of number                        (* integer literal *)
       | StrExp of string                        (* string literal *)

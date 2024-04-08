@@ -37,10 +37,14 @@ structure Main : sig
 
     (* conditionally dump the various IRs to a file *)
     local
-      fun dumpIf dump flg arg = if !flg then dump arg else ()
+      fun dumpIf irName dump flg arg = if !flg
+            then (
+              say ["dump ", irName, "\n"];
+              dump arg)
+            else ()
     in
-    val dumpPT = dumpIf DumpParseTree.dumpToFile Options.dumpPT
-    val dumpBT = dumpIf DumpBindTree.dumpToFile Options.dumpBT
+    val dumpPT = dumpIf "parse tree" DumpParseTree.dumpToFile Options.dumpPT
+    val dumpBT = dumpIf "bind tree" DumpBindTree.dumpToFile Options.dumpBT
     end (* local *)
 
     (* process an input file that is known to exist *)

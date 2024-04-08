@@ -216,13 +216,14 @@ structure DumpBindTree : sig
     val mkUnExp = mkNode "UnExp"
     val mkAppExp = mkNode "AppExp"
     val mkTupleExp = mkNode "TupleExp"
-    val mkOvldVarExp = mkNode "OvldVarExp"
-    val mkValVarExp = mkNode "ValVarExp"
+    val mkVarExp = mkNode "VarExp"
     val mkConExp = mkNode "ConExp"
     val mkIntExp = mkNode "IntExp"
     val mkStrExp = mkNode "StrExp"
     val mkCaseExp = mkNode "CaseExp"
     val mkBindExp = mkNode "BindExp"
+    val mkOvldUse = mkNode "OvldUse"
+    val mkVarUse = mkNode "VarUse"
     val mkCaseRule = mkNode "CaseRule"
     val mkTuplePat = mkNode "TuplePat"
     val mkConPat = mkNode "ConPat"
@@ -309,18 +310,17 @@ structure DumpBindTree : sig
           (* end case *))
 
     and exp2sexp (env, exp) = let
-          val valvar2sexp = valvar2sexp env
+          val varuse2sexp = varuse2sexp env
           fun toSExp exp = (case exp
                  of BT.MarkExp m => mark2sexp exp2sexp (env, m)
                   | BT.IfExp(e1, e2, e3) => mkIfExp [toSExp e1, toSExp e2, toSExp e3]
                   | BT.OrElseExp(e1, e2) => mkOrElseExp [toSExp e1, toSExp e2]
                   | BT.AndAlsoExp(e1, e2) => mkAndAlsoExp [toSExp e1, toSExp e2]
-                  | BT.BinExp(e1, id, e2) => mkBinExp [toSExp e1, valvar2sexp id, toSExp e2]
-                  | BT.UnExp(id, e) => mkUnExp [valvar2sexp id, toSExp e]
+                  | BT.BinExp(e1, id, e2) => mkBinExp [toSExp e1, varuse2sexp id, toSExp e2]
+                  | BT.UnExp(id, e) => mkUnExp [varuse2sexp id, toSExp e]
                   | BT.AppExp(e1, e2) => mkAppExp [toSExp e1, toSExp e2]
                   | BT.TupleExp es => mkTupleExp (List.map toSExp es)
-                  | BT.OvldVarExp id => mkOvldVarExp [ovldvar2sexp env id]
-                  | BT.ValVarExp id => mkValVarExp [valvar2sexp id]
+                  | BT.VarExp id => mkVarExp [varuse2sexp id]
                   | BT.ConExp id => mkConExp [con2sexp env id]
                   | BT.IntExp n => mkIntExp [INT n]
                   | BT.StrExp s => mkStrExp [STRING s]
@@ -332,6 +332,9 @@ structure DumpBindTree : sig
           in
             toSExp exp
           end
+
+    and varuse2sexp env (BT.OvldUse x) = mkOvldUse [ovldvar2sexp env x]
+      | varuse2sexp env (BT.VarUse x) = mkVarUse [valvar2sexp env x]
 
     and rule2sexp (env, ty) = (case ty
            of BT.MarkRule m => mark2sexp rule2sexp (env, m)
